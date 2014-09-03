@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * Piwik Extension for Magento created by Adrian Speyer
+ * Get Piwik at http://www.piwik.org - Open source web analytics
+ *
+ * @category    PiwikMage
+ * @package     RespondrMage_RespondrAnalytics
+ * @copyright   Copyright (c) 2012 Adrian Speyer. (http://www.adrianspeyer.com)
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ *
+ */
+-->
+<config>
+    <modules>
+        <RespondrMage_RespondrAnalytics>
+            <version>1.0.0.0</version>
+        </RespondrMage_RespondrAnalytics>
+    </modules>
+    <global>
+        <models>
+            <respondranalytics>
+                <class>RespondrMage_RespondrAnalytics_Model</class>
+            </respondranalytics>
+        </models>
+        <blocks>
+            <respondranalytics>
+                <class>RespondrMage_RespondrAnalytics_Block</class>
+            </respondranalytics>
+        </blocks>
+        <helpers>
+            <respondranalytics>
+                <class>RespondrMage_RespondrAnalytics_Helper</class>
+            </respondranalytics>
+        </helpers>
+    </global>
+    <frontend>
+        <translate>
+            <modules>
+                <RespondrMage_RespondrAnalytics>
+                    <files>
+                        <default>RespondrMage_RespondrAnalytics.csv</default>
+                    </files>
+                </RespondrMage_RespondrAnalytics>
+            </modules>
+        </translate>
+        <events>
+            <checkout_onepage_controller_success_action>
+                <observers>
+                    <respondranalytics_order_success>
+                        <class>respondranalytics/observer</class>
+                        <method>setRespondrAnalyticsOnOrderSuccessPageView</method>
+                    </respondranalytics_order_success>
+                </observers>
+            </checkout_onepage_controller_success_action>
+            <checkout_multishipping_controller_success_action>
+                <observers>
+                    <respondranalytics_order_success>
+                        <class>respondranalytics/observer</class>
+                        <method>setRespondrAnalyticsOnOrderSuccessPageView</method>
+                    </respondranalytics_order_success>
+                </observers>
+            </checkout_multishipping_controller_success_action>
+        </events>
+        <layout>
+            <updates>
+                <respondranalytics>
+                    <file>respondranalytics.xml</file>
+                </respondranalytics>
+            </updates>
+        </layout>
+    </frontend>
+    <adminhtml>
+        <translate>
+            <modules>
+                <RespondrMage_RespondrAnalytics>
+                    <files>
+                        <default>RespondrMage_RespondrAnalytics.csv</default>
+                    </files>
+                </RespondrMage_RespondrAnalytics>
+            </modules>
+        </translate>
+    </adminhtml>
+    <admin>
+        <routers>
+            <RespondrMage_RespondrAnalytics>
+                <use>admin</use>
+                <args>
+                    <module>RespondrMage_RespondrAnalytics</module>
+                    <frontName>respondranalytics</frontName>
+                </args>
+            </RespondrMage_RespondrAnalytics>
+        </routers>
+    </admin>
+</config>

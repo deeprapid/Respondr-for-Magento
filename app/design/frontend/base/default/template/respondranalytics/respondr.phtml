@@ -1,0 +1,87 @@
+<?php
+/**
+ *
+ * Respondr Extension for Magento created by Respondr Inc.
+ * Based on Piwik Extension for Magento by Adrian Speyer
+ *
+ * @category   RespondrMage
+ * @package    RespondrMage_RespondrAnalytics
+ * @copyright  Copyright (c) 2014 Respondr Inc. (http://www.respondr.io)
+ * @license    http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ *
+ */
+?>
+<?php if (!Mage::helper('core/cookie')->isUserNotAllowSaveCookie()): ?>
+<?php $siteId = Mage::getStoreConfig(RespondrMage_RespondrAnalytics_Helper_Data::XML_PATH_SITE) ?>
+<?php $installPath = RespondrMage_RespondrAnalytics_Helper_Data::SERVER_URL ?>
+
+<?php 
+
+if ($siteId) {
+	if (strpos($installPath, "https://") !== false) {
+		$secureinstallPath = $installPath;
+		$installPath = str_replace("https://", "http://", $installPath);
+	}
+	if (strpos($installPath, "http://") === false)
+		$installPath = "http://" . $installPath;
+
+	$secureinstallPath = str_replace("http://", "https://", $installPath);
+
+	$last = $installPath[strlen($installPath)-1];
+	
+	if ($last != "/") { 
+		$installPath .= "/";
+		$secureinstallPath .= "/";
+	}
+	?>
+
+<?php
+//0 Search Results
+if($this->getRequest()->getControllerName()=='result')
+{
+$nores = Mage::helper('catalogsearch')->getEngine()->getResultCollection()->addSearchFilter(Mage::helper('catalogsearch')->getQuery()->getQueryText())->getSize();
+}?>
+	
+	
+
+<!-- RESPONDR TRACKING CODE --> 
+<script type="text/javascript">
+//<![CDATA[
+
+var rBaseURL = (("https:" == document.location.protocol) ? "<?php echo $secureinstallPath ?>" : "<?php echo $installPath ?>");
+document.write(unescape("%3Cscript src='" + rBaseURL + "respondr.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var respondrTracker = Piwik.getTracker(rBaseURL + "respondr.php", <?php echo $siteId ?>);
+<?php echo $this->_getEcommerceCartUpdate()?>
+<?php echo $this->_getOrdersTrackingCode()?>
+<?php echo $this->_getProductPageview()?>
+<?php echo $this->_getCategoryPageview()?>
+<?php echo $this->_getUser()?> // added by Respondr
+<?php echo $this->_getOptinStatus()?> // added by Respondr
+<?php if (isset($nores)) 
+{?>
+var searchCount = <? echo $nores?>;
+respondrTracker.setCustomUrl(document.URL + '&search_count=' + searchCount);
+<?php }?>
+
+<?php
+//404 tracking
+$action = Mage::app()->getRequest()->getActionName();
+if($action == 'noRoute'){?>
+respondrTracker.setDocumentTitle('404/URL = '+String(document.location.pathname+document.location.search).replace(/\//g,"%2f") + '/From = ' + String(document.referrer).replace(/\//g,"%2f"));
+<?php }?>
+
+<?php echo "\n";?>
+respondrTracker.trackPageView();
+respondrTracker.enableLinkTracking();
+} catch( err ) {}
+//]]>
+</script>
+<noscript><p><img src="<?php echo $installPath ?>respondr.php?idsite=<?php echo $siteId ?>" style="border:0" alt="" /></p></noscript>
+<!-- END RESPONDR TRACKING CODE --> 
+		
+	<?php } ?>
+<?php endif; ?>
+
+

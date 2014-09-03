@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+ *
+ * Respondr Extension for Magento created by Respondr Inc.
+ * Based on Piwik Extension for Magento by Adrian Speyer
+ *
+ * @category   RespondrMage
+ * @package    RespondrMage_RespondrAnalytics
+ * @copyright  Copyright (c) 2014 Respondr Inc. (http://www.respondr.io)
+ * @license    http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ *
+-->
+<layout version="0.1.0">
+
+<!--
+Default layout, loads most of the pages
+-->
+
+    <default>
+        <reference name="before_body_end">
+            <block type="respondranalytics/respondr" name="respondr_analytics" as="respondr_analytics" template="respondranalytics/respondr.phtml" />
+        </reference>
+    </default>
+</layout>
