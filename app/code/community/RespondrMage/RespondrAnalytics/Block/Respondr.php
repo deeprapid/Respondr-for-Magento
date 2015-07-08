@@ -1,212 +1,241 @@
 <?php
-/**
- *
- * Respondr Extension for Magento created by Respondr Inc.
- * Based on Piwik Extension for Magento by Adrian Speyer
- *
- * @category   RespondrMage
- * @package    RespondrMage_RespondrAnalytics
- * @copyright  Copyright (c) 2014 Respondr Inc. (http://www.respondr.io)
- * @license    http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- */
 
 class RespondrMage_RespondrAnalytics_Block_Respondr extends Mage_Core_Block_Template
 {
-
-    /**
-     * Get a specific page name (may be customized via layout)
-     *
-     * @return string|null
-     */
-    public function getPageName()
+    public function _trackSession()
     {
-        return $this->_getData('page_name');
+        $siteId = Mage::getStoreConfig(RespondrMage_RespondrAnalytics_Helper_Data::XML_PATH_SITE);
+
+        echo "_raq.push(['trackSession', '$siteId']);";
     }
 
-    /**
-     * Render information about specified orders and their items
-     * http://piwik.org/docs/ecommerce-analytics/
-     */
-    protected function _getOrdersTrackingCode()
+    public function trackProductView($sku, $name = '', $category = '', $price = '', $imageUrl = '', $desc = '')
+    {
+        echo <<<EOL
+            _raq.push(['trackProductView', {
+                sku: '$sku',
+                name: '$name',
+                category: '$category',
+                price: '$price',
+                imageUrl: '$imageUrl',
+                desc: '$desc'
+            }]);
+EOL;
+    }
+
+    public function trackCategoryView($name)
+    {
+        echo <<<EOL
+            _raq.push(['trackCategoryView', {
+                name: '$name'
+            }]);
+EOL;
+    }
+
+    protected function _trackOrder()
     {
         $orderIds = $this->getOrderIds();
+
         if (empty($orderIds) || !is_array($orderIds)) {
             return;
         }
 
-        $collection = Mage::getResourceModel('sales/order_collection')
-            ->addFieldToFilter('entity_id', array('in' => $orderIds));
-        $result = array();
+        $collection = Mage::getResourceModel('sales/order_collection')->addFieldToFilter('entity_id', array('in' => $orderIds));
 
         foreach ($collection as $order) {
-            foreach ($order->getAllVisibleItems() as $item) {
 
-                //get category name
-                $product_id = $item->product_id;
-                $_product = Mage::getModel('catalog/product')->load($product_id);
-                $cats = $_product->getCategoryIds();
-                $category_id = $cats[0]; // just grab the first id
-                $category = Mage::getModel('catalog/category')->load($category_id);
-                $category_name = $category->getName();
-
-
-                if ($item->getQtyOrdered()) {
-                    $qty = number_format($item->getQtyOrdered(), 0, '.', '');
-                } else {
-                    $qty = '0';
-                }
-                $result[] = sprintf("respondrTracker.addEcommerceItem( '%s', '%s', '%s', %s, %s);",
-                    $this->jsQuoteEscape($item->getSku()),
-                    $this->jsQuoteEscape($item->getName()),
-                    $category_name,
-                    $item->getBasePrice(),
-                    $qty
-                );
-
+            if ($order->getGrandTotal()) {
+                $subtotal = $order->getGrandTotal() - $order->getShippingAmount() - $order->getShippingTaxAmount();
+            } else {
+                $subtotal = '0.00';
             }
-            foreach ($collection as $order) {
-                if ($order->getGrandTotal()) {
-                    $subtotal = $order->getGrandTotal() - $order->getShippingAmount() - $order->getShippingTaxAmount();
-                } else {
-                    $subtotal = '0.00';
-                }
-                $result[] = sprintf("respondrTracker.trackEcommerceOrder( '%s', %s, %s, %s, %s);",
-                    $order->getIncrementId(),
-                    $order->getBaseGrandTotal(),
-                    $subtotal,
-                    $order->getBaseTaxAmount(),
-                    $order->getBaseShippingAmount()
-                );
 
+            $data = array(
+                'orderId'  => $order->getIncrementId(),
+                'total'    => $order->getBaseGrandTotal(),
+                'subTotal' => $subtotal,
+                'tax'      => $order->getBaseTaxAmount(),
+                'shipping' => $order->getBaseShippingAmount(),
+                'discount' => 0
+            );
 
-            }
+            $json = json_encode($data);
+
+            echo "_raq.push(['trackEcommerceOrder', $json]);";
         }
-        return implode("\n", $result);
     }
 
-    /**
-     * Render information when cart updated
-     * http://piwik.org/docs/ecommerce-analytics/
-     */
-    protected function _getEcommerceCartUpdate()
+    protected function _trackCartAdds()
     {
+        $items = Mage::getSingleton('core/session')->getCartAdds();
 
-        $cart = Mage::getModel('checkout/cart')->getQuote()->getAllVisibleItems();
+        foreach ($items as $item) {
+            $data = array(
+                'sku'      => $item->getData('sku'),
+                'name'     => $item->getData('name'),
+                'category' => $item->getData('category'),
+                'price'    => $item->getData('price'),
+                'imageUrl' => $item->getData('imageUrl'),
+                'desc'     => $item->getData('desc'),
+                'qty'      => $item->getData('qty'),
+            );
 
-        foreach ($cart as $cartitem) {
+            $json = json_encode($data);
 
-            //get category name
-            $product_id = $cartitem->product_id;
-            $_product = Mage::getModel('catalog/product')->load($product_id);
-            $cats = $_product->getCategoryIds();
-            if (isset($cats)) {
-                $category_id = $cats[0];
-            } // just grab the first id
-            $category = Mage::getModel('catalog/category')->load($category_id);
-            $category_name = $category->getName();
-            $nameofproduct = $cartitem->getName();
-            $nameofproduct = str_replace('"', "", $nameofproduct);
-
-            if ($cartitem->getPrice() == 0 || $cartitem->getPrice() < 0.00001):
-                continue;
-            endif;
-            echo 'respondrTracker.addEcommerceItem("' . $cartitem->getSku() . '","' . $nameofproduct . '","' . $category_name . '",' . $cartitem->getPrice() . ',' . $cartitem->getQty() . ');';
-            echo "\n";
+            echo "_raq.push(['addEcommerceItem', $json]);";
         }
 
-        //total in cart
-        $grandTotal = Mage::getModel('checkout/cart')->getQuote()->getGrandTotal();
-        if ($grandTotal == 0) echo ''; else
-            echo 'respondrTracker.trackEcommerceCartUpdate(' . $grandTotal . ');';
-        echo "\n";
+        Mage::getSingleton('core/session')->unsCartAdds();
     }
 
-    /**
-     * Render information when product page view
-     * http://piwik.org/docs/ecommerce-analytics/
-     */
-    protected function _getProductPageview()
+    protected function _trackCartUpdates()
     {
+        //$items = Mage::getModel('checkout/cart')->getQuote()->getAllVisibleItems();
 
-        $currentproduct = Mage::registry('current_product');
+        $items = Mage::getSingleton('core/session')->getCartUpdates();
 
-        if (!($currentproduct instanceof Mage_Catalog_Model_Product)) {
+        foreach ($items as $item) {
+            $data = array(
+                'sku' => $item->getData('sku'),
+                'qty' => $item->getData('qty'),
+            );
+
+            $json = json_encode($data);
+
+            echo "_raq.push(['updateEcommerceItem', $json]);";
+        }
+
+        Mage::getSingleton('core/session')->unsCartUpdates();
+    }
+
+    protected function _trackCartDeletes()
+    {
+        $items = Mage::getSingleton('core/session')->getCartDeletes();
+
+        foreach ($items as $item) {
+            $data = array(
+                'sku' => $item->getData('sku'),
+            );
+
+            $json = json_encode($data);
+
+            echo "_raq.push(['deleteEcommerceItem', $json]);";
+        }
+
+        Mage::getSingleton('core/session')->unsCartDeletes();
+    }
+
+    protected function _trackPageView()
+    {
+        $data = array(
+            'pageTitle' => $this->getLayout()->getBlock('head')->getTitle(),
+        );
+
+        $json = json_encode($data);
+
+        echo "_raq.push(['trackPageView', $json]);";
+    }
+
+    protected function _trackProductView()
+    {
+        $currentProduct = Mage::registry('current_product');
+
+        if (!$currentProduct instanceof Mage_Catalog_Model_Product) {
             return;
         }
 
+        $productId = $currentProduct->getId();
+        $product = Mage::getModel('catalog/product')->load($productId);
+        $categoryName = '';
+        $categoryIds = $product->getCategoryIds();
+        if (!empty($categoryIds)) {
+            $categoryId = $categoryIds[0];
+            $category = Mage::getModel('catalog/category')->load($categoryId);
+            $categoryName = $category->getName();
+        }
 
-        $product_id = $currentproduct->getId();
-        $_product = Mage::getModel('catalog/product')->load($product_id);
-        $cats = $_product->getCategoryIds();
-        $category_id = $cats[0]; // just grab the first id
-        //$category_id = if (isset($cats[0]) {$category_id = $cats[0]} else $category_id = null; potential fix when no catgeories
-        $category = Mage::getModel('catalog/category')->load($category_id);
-        $category_name = $category->getName();
-        $product = $currentproduct->getName();
-        //$product = str_replace('"', "", $product);
-        //$description = str_replace('"', "", $_product->getDescription());
-        $description = "";
+        $data = array(
+            'sku'      => $currentProduct->getSku(),
+            'name'     => $currentProduct->getName(),
+            'category' => $categoryName,
+            'price'    => $currentProduct->getPrice(),
+            'imageUrl' => $product->getThumbnail(),
+            'desc'     => $product->getDescription(),
+        );
 
-        echo 'respondrTracker.setEcommerceView("' . $this->jsQuoteEscape($currentproduct->getSku()) . '", "' . $this->jsQuoteEscape($product) . '","' . $this->jsQuoteEscape($category_name) . '",' . $currentproduct->getPrice() . ',"'. $_product->getImageUrl() . '","'. $this->jsQuoteEscape($description) .'");';
+        $json = json_encode($data);
+
+        echo "_raq.push(['trackProductView', $json]);";
+
         Mage::unregister('current_category');
     }
 
-    /**
-     * Render information of category view
-     * http://piwik.org/docs/ecommerce-analytics/
-     */
-    protected function _getCategoryPageview()
+    protected function _trackCategoryView()
     {
-        $currentcategory = Mage::registry('current_category');
+        $currentCategory = Mage::registry('current_category');
 
-        if (!($currentcategory instanceof Mage_Catalog_Model_Category)) {
+        if (!$currentCategory instanceof Mage_Catalog_Model_Category) {
             return;
         }
-        echo 'respondrTracker.setEcommerceView(false,false,"' . $currentcategory->getName() . '",false,false);';
+
+        $data = array(
+            'name' => $currentCategory->getName(),
+        );
+
+        $json = json_encode($data);
+
+        echo "_raq.push(['trackCategoryView', $json]);";
+
         Mage::unregister('current_product');
     }
 
-    /**
-     * Respondr lead/customer capture...
-     * Saves user's firstname, lastname, company, email, telephone 
-     * and optin status as json-encoded custom variable
-    */   
-    protected function _getUser() {
-        
-        if (Mage::getSingleton('customer/session')->isLoggedIn()) {          
-           $customer = Mage::getSingleton('customer/session')->getCustomer();                    
-           $customerAddressId = Mage::getSingleton('customer/session')->getCustomer()->getDefaultBilling(); 
-           $optin = Mage::helper('respondranalytics')->isCustomerSubscribed($customer->getData("email"));        
-           echo 'respondrTracker.setCustomVariable (1, "email", "'.$customer->getData("email").'", scope = "visit");';   
-           echo 'respondrTracker.setCustomVariable (2, "firstName", "'.$customer->getData("firstname").'", scope = "visit");'; 
-           echo 'respondrTracker.setCustomVariable (3, "lastName", "'.$customer->getData("lastname").'", scope = "visit");'; 
-           if ($customerAddressId){
-               $address = Mage::getModel('customer/address')->load($customerAddressId);
-               echo 'respondrTracker.setCustomVariable (4, "company", "'.$address->getData("company").'", scope = "visit");'; 
-               echo 'respondrTracker.setCustomVariable (5, "phone", "'.$address->getData("telephone").'", scope = "visit");'; 
-           }
+    protected function _saveContact()
+    {
+        $session = Mage::getSingleton('customer/session');
+
+        if ($session->isLoggedIn()) {
+
+            $customer = $session->getCustomer();
+
+            $customerAddressId = $customer->getDefaultBilling();
+
+            if ($customerAddressId) {
+                $address = Mage::getModel('customer/address')->load($customerAddressId);
+                $company = $address->getData('company');
+                $phone = $address->getData('telephone');
+            } else {
+                $company = '';
+                $phone = '';
+            }
+
+            $data = array(
+                'email'     => $customer->getData('email'),
+                'firstName' => $customer->getData('firstname'),
+                'lastName'  => $customer->getData('lastname'),
+                'company'   => $company,
+                'phone'     => $phone,
+            );
+
+            $json = json_encode($data);
+
+            echo "_raq.push(['saveContact', $json]);";
         }
-        
-        
     }
 
-    protected function _getOptinStatus() {
-        
-        if (Mage::getSingleton('customer/session')->isLoggedIn()) {          
-           $customer = Mage::getSingleton('customer/session')->getCustomer();
-           $optin = Mage::helper('respondranalytics')->isCustomerSubscribed($customer->getData("email"));        
-           echo 'respondrTracker.setCustomVariable (10, "optin", "'.$optin.'", scope = "visit");';
+    protected function _trackSiteSearch()
+    {
+        if ($this->getRequest()->getControllerName() === 'result') {
+
+            $data = array(
+                'searchKeyword' => Mage::helper('catalogsearch')->getQuery()->getQueryText(),
+            );
+
+            $json = json_encode($data);
+
+            echo "_raq.push(['trackSiteSearch', $json]);";
         }
-        
-        
     }
 
-    /**
-     * Render Respondr tracking scripts
-     *
-     * @return string
-     */
     protected function _toHtml()
     {
         if (!Mage::helper('respondranalytics')->isRespondrAnalyticsAvailable()) {

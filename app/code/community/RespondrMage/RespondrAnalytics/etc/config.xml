@@ -46,20 +46,72 @@
             </modules>
         </translate>
         <events>
+            <!--
+            <customer_register_success>
+                <observers>
+                    <respondranalytics>
+                        <class>respondranalytics/observer</class>
+                        <method>customerRegister</method>
+                    </respondranalytics>
+                </observers>
+            </customer_register_success>
+            <controller_action_layout_render_before_catalogsearch_result_index>
+                <observers>
+                    <respondranalytics>
+                        <class>respondranalytics/observer</class>
+                        <method>catalogSearch</method>
+                    </respondranalytics>
+                </observers>
+            </controller_action_layout_render_before_catalogsearch_result_index>
+            <controller_action_layout_render_before_catalogsearch_advanced_result>
+                <observers>
+                    <respondranalytics>
+                        <class>respondranalytics/observer</class>
+                        <method>catalogSearch</method>
+                    </respondranalytics>
+                </observers>
+            </controller_action_layout_render_before_catalogsearch_advanced_result>
+            -->
+            <controller_action_predispatch_checkout_cart_add>
+                <observers>
+                    <respondranalytics>
+                        <class>respondranalytics/observer</class>
+                        <method>cartProductAdd</method>
+                    </respondranalytics>
+                </observers>
+            </controller_action_predispatch_checkout_cart_add>
+            <controller_action_predispatch_checkout_cart_updatePost>
+                <observers>
+                    <respondranalytics>
+                        <class>respondranalytics/observer</class>
+                        <method>cartUpdateOrClear</method>
+                    </respondranalytics>
+                </observers>
+            </controller_action_predispatch_checkout_cart_updatePost>
+            <!--
+            <checkout_cart_update_items_after>
+                <observers>
+                    <respondranalytics>
+                        <class>respondranalytics/observer</class>
+                        <method>cartUpdateItems</method>
+                    </respondranalytics>
+                </observers>
+            </checkout_cart_update_items_after>
+            -->
             <checkout_onepage_controller_success_action>
                 <observers>
-                    <respondranalytics_order_success>
+                    <respondranalytics>
                         <class>respondranalytics/observer</class>
                         <method>setRespondrAnalyticsOnOrderSuccessPageView</method>
-                    </respondranalytics_order_success>
+                    </respondranalytics>
                 </observers>
             </checkout_onepage_controller_success_action>
             <checkout_multishipping_controller_success_action>
                 <observers>
-                    <respondranalytics_order_success>
+                    <respondranalytics>
                         <class>respondranalytics/observer</class>
                         <method>setRespondrAnalyticsOnOrderSuccessPageView</method>
-                    </respondranalytics_order_success>
+                    </respondranalytics>
                 </observers>
             </checkout_multishipping_controller_success_action>
         </events>
@@ -74,23 +126,23 @@
     <adminhtml>
         <translate>
             <modules>
-                <RespondrMage_RespondrAnalytics>
+                <respondranalytics>
                     <files>
                         <default>RespondrMage_RespondrAnalytics.csv</default>
                     </files>
-                </RespondrMage_RespondrAnalytics>
+                </respondranalytics>
             </modules>
         </translate>
     </adminhtml>
     <admin>
         <routers>
-            <RespondrMage_RespondrAnalytics>
+            <respondranalytics>
                 <use>admin</use>
                 <args>
                     <module>RespondrMage_RespondrAnalytics</module>
                     <frontName>respondranalytics</frontName>
                 </args>
-            </RespondrMage_RespondrAnalytics>
+            </respondranalytics>
         </routers>
     </admin>
 </config>

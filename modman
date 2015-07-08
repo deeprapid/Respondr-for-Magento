@@ -1,0 +1,13 @@
+app/code/community/RespondrMage/RespondrAnalytics/Block/Respondr.php app/code/community/RespondrMage/RespondrAnalytics/Block/Respondr.php
+app/code/community/RespondrMage/RespondrAnalytics/Helper/Data.php app/code/community/RespondrMage/RespondrAnalytics/Helper/Data.php
+app/code/community/RespondrMage/RespondrAnalytics/Model/Observer.php app/code/community/RespondrMage/RespondrAnalytics/Model/Observer.php
+app/code/community/RespondrMage/RespondrAnalytics/controllers/IndexController.php app/code/community/RespondrMage/RespondrAnalytics/controllers/IndexController.php
+app/code/community/RespondrMage/RespondrAnalytics/etc/adminhtml.xml app/code/community/RespondrMage/RespondrAnalytics/etc/adminhtml.xml
+app/code/community/RespondrMage/RespondrAnalytics/etc/config.xml app/code/community/RespondrMage/RespondrAnalytics/etc/config.xml
+app/code/community/RespondrMage/RespondrAnalytics/etc/system.xml app/code/community/RespondrMage/RespondrAnalytics/etc/system.xml
+app/design/frontend/base/default/layout/respondranalytics.xml app/design/frontend/base/default/layout/respondranalytics.xml
+app/design/frontend/base/default/template/respondranalytics/respondr.phtml app/design/frontend/base/default/template/respondranalytics/respondr.phtml
+app/design/frontend/base/default/template/respondranalytics/event/checkout/cart/index.phtml app/design/frontend/base/default/template/respondranalytics/event/checkout/cart/index.phtml
+app/etc/modules/RespondrMage_RespondrAnalytics.xml app/etc/modules/RespondrMage_RespondrAnalytics.xml
+app/locale/de_DE/RespondrMage_RespondrAnalytics.csv app/locale/de_DE/RespondrMage_RespondrAnalytics.csv
+app/locale/en_US/RespondrMage_RespondrAnalytics.csv app/locale/en_US/RespondrMage_RespondrAnalytics.csv

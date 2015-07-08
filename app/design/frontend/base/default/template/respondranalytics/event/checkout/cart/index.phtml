@@ -1,0 +1,11 @@
+<?php $_product = Mage::getModel('core/session')->getProductToShoppingCart(); ?>
+<?php if ($_product && $_product->getId()) { ?>
+    <?php $data = json_encode($_product); ?>
+    <script type="text/javascript">
+        alert('test');
+        console.log('<?php var_dump($_product); ?>');
+        //var _raq = _raq || [];
+        //_raq.push(['trackSiteSearch', $json]);
+    </script>
+    <?php Mage::getModel('core/session')->unsProductToShoppingCart(); ?>
+<?php } ?>

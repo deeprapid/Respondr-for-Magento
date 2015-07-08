@@ -1,34 +1,22 @@
 <?xml version="1.0"?>
-<!--
-/**
- *
- * Respondr Extension for Magento created by Adrian Speyer
- * Get Respondr at http://www.respondr.org - Open source web analytics
- * 
- * @category    Mage
- * @package     Mage_RespoNdranalytics_etc_adminhtml
- * @copyright   Copyright (c) 2012 Adrian Speyer. (http://www.adrianspeyer.com)
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- */
--->
 <config>
-	    <menu>
+    <menu>
         <report translate="title" module="reports">
             <title>Reports</title>
             <sort_order>80</sort_order>
-            <children>                                             
+            <children>
                 <iframe_respondr translate="title" module="reports">
-					<title>Respondr iFrame</title>
-								<sort_order>99999</sort_order>
-								<action>respondranalytics/index/index</action>
-							<depends><config>respondr/analytics/active</config></depends>
+                    <title>Respondr iFrame</title>
+                    <sort_order>99999</sort_order>
+                    <action>respondranalytics/index/index</action>
+                    <depends>
+                        <config>respondr/analytics/active</config>
+                    </depends>
                 </iframe_respondr>
             </children>
         </report>
     </menu>
-
-	<acl>
+    <acl>
         <resources>
             <admin>
                 <children>
@@ -37,7 +25,7 @@
                             <config>
                                 <children>
                                     <respondr translate="title" module="respondranalytics">
-                                        <title>Respondr Analytics</title>									
+                                        <title>Respondr Analytics</title>
                                     </respondr>
                                 </children>
                             </config>
@@ -47,7 +35,7 @@
             </admin>
         </resources>
     </acl>
-	   <acl>
+    <acl>
         <resources>
             <admin>
                 <children>

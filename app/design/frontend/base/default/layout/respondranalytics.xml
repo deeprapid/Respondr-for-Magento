@@ -1,24 +1,15 @@
 <?xml version="1.0"?>
-<!--
- *
- * Respondr Extension for Magento created by Respondr Inc.
- * Based on Piwik Extension for Magento by Adrian Speyer
- *
- * @category   RespondrMage
- * @package    RespondrMage_RespondrAnalytics
- * @copyright  Copyright (c) 2014 Respondr Inc. (http://www.respondr.io)
- * @license    http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
--->
 <layout version="0.1.0">
-
-<!--
-Default layout, loads most of the pages
--->
-
     <default>
         <reference name="before_body_end">
-            <block type="respondranalytics/respondr" name="respondr_analytics" as="respondr_analytics" template="respondranalytics/respondr.phtml" />
+            <block type="respondranalytics/respondr" name="respondr_analytics" as="respondr_analytics" template="respondranalytics/respondr.phtml"/>
         </reference>
     </default>
+    <!--
+    <checkout_cart_index>
+        <reference name="before_body_end">
+            <block type="respondranalytics/event_checkout_cart_index" name="respondranalytics_event_checkout_cart_index" template="respondranalytics/event/checkout/cart/index.phtml"/>
+        </reference>
+    </checkout_cart_index>
+    -->
 </layout>
