@@ -148,7 +148,7 @@ class RespondrMage_RespondrAnalytics_Block_Respondr extends Mage_Core_Block_Temp
         //$description = str_replace('"', "", $_product->getDescription());
         $description = "";
 
-        echo 'respondrTracker.setEcommerceView("' . $this->jsQuoteEscape($currentproduct->getSku()) . '", "' . $this->jsQuoteEscape($product) . '","' . $this->jsQuoteEscape($category_name) . '",' . $currentproduct->getPrice() . ',"'. $_product->getImageUrl() . '","'. $this->jsQuoteEscape($description) .'");';
+        echo 'respondrTracker.trackProductView("' . $this->jsQuoteEscape($this->jsQuoteEscape($currentproduct->getSku()), '"') . '", "' . $this->jsQuoteEscape($this->jsQuoteEscape($product), '"') . '","' . $this->jsQuoteEscape($category_name) . '",' . $currentproduct->getPrice() . ',"'. $_product->getImageUrl() . '","'. $this->jsQuoteEscape($description) .'");';
         Mage::unregister('current_category');
     }
 
@@ -163,7 +163,7 @@ class RespondrMage_RespondrAnalytics_Block_Respondr extends Mage_Core_Block_Temp
         if (!($currentcategory instanceof Mage_Catalog_Model_Category)) {
             return;
         }
-        echo 'respondrTracker.setEcommerceView(false,false,"' . $currentcategory->getName() . '",false,false);';
+        echo 'respondrTracker.trackCategoryView(false,false,"' . $currentcategory->getName() . '",false,false);';
         Mage::unregister('current_product');
     }
 

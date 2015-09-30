@@ -20,8 +20,7 @@ class RespondrMage_RespondrAnalytics_Helper_Data extends Mage_Core_Helper_Abstra
 	const XML_PATH_PWTOKEN = 'respondr/analytics/pwtoken';
 
     // hard-code Respondr URL
-    const SERVER_URL = 'http://analytics.respondr.io';
-	
+    const SERVER_URL = 'http://v2.analytics.respondr.io/';
 	
     /**
      *
@@ -39,13 +38,11 @@ class RespondrMage_RespondrAnalytics_Helper_Data extends Mage_Core_Helper_Abstra
      * @return string
      */
     public function isCustomerSubscribed($email) {
-        $isSubscribed = 0;
-        $db = Mage::getSingleton('core/resource')->getConnection('core_read');
-        $sql = "SELECT * FROM `newsletter_subscriber` WHERE `subscriber_email`='".$email."' AND `subscriber_status`='1' LIMIT 1";
-        $result = $db->fetchAll($sql);
-        if($result){
-            $isSubscribed = 1;
+        $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+        if($subscriber->getId()) {
+            return $subscriber->getData('subscriber_status') == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED;
+        } else {
+            return 0;
         }
-        return $isSubscribed;   
     }
 }

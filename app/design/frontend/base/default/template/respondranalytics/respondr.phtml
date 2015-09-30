@@ -52,7 +52,9 @@ var rBaseURL = (("https:" == document.location.protocol) ? "<?php echo $securein
 document.write(unescape("%3Cscript src='" + rBaseURL + "respondr.js' type='text/javascript'%3E%3C/script%3E"));
 </script><script type="text/javascript">
 try {
-var respondrTracker = Piwik.getTracker(rBaseURL + "respondr.php", <?php echo $siteId ?>);
+var respondrSessionId,respondrSessionTime,respondrVisitorId,respondrAction;
+var respondrTracker = Piwik.getTracker(rBaseURL, <?php echo $siteId ?>);
+respondrTracker.getSession();
 <?php echo $this->_getEcommerceCartUpdate()?>
 <?php echo $this->_getOrdersTrackingCode()?>
 <?php echo $this->_getProductPageview()?>
