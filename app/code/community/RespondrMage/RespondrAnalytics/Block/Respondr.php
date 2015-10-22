@@ -83,6 +83,14 @@ class RespondrMage_RespondrAnalytics_Block_Respondr extends Mage_Core_Block_Temp
                   'tax: ' . $order->getBaseTaxAmount() .',' .
                   'shipping: ' . $order->getBaseShippingAmount();
             $obj = $obj . '}]);';
+
+            // get data for guest checkout
+            $obj = $obj . '_raq.push(["saveContact", {' .
+                  'email: "' . $order->getData("customer_email") .'",' .
+                  'firstName: "' . $order->getData("customer_firstname") .'",' .
+                  'lastName: "' . $order->getData("customer_lastname") .'"';
+            $obj = $obj . '}]);';
+
             echo $obj;
         }
     }
@@ -141,7 +149,7 @@ class RespondrMage_RespondrAnalytics_Block_Respondr extends Mage_Core_Block_Temp
            }
            $obj = $obj . '}]);';
            echo $obj;
-        } 
+        }
         
     }
 
