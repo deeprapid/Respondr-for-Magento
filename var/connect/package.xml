@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+    <name>Respondr_Ecommerce</name>
+    <version>2.0.1</version>
+    <stability>stable</stability>
+    <license>GPL</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>CRM and marketing automation for e-commerce. Send personalized messages to your users based on their actions.</summary>
+    <description>Respondr is a B2C CRM with powerful e-commerce features, including marketing automation and e-commerce analytics. Increase your online revenue with automated email, mobile, and social messaging driven by your web analytics. Respondr makes it easy to re-engage your customers and bring them back to your store. Creating and managing abandoned cart, product recommendation, and cross-sell email marketing has never been easier. You can also send coupons and promotions via SMS/MMS, Facebook and more!</description>
+    <notes>Enabled guest checkout.</notes>
+    <authors><author><name>Respondr Inc.</name><user>respondr</user><email>admin@respondr.io</email></author><author><name>Adrian Speyer</name><user>AdrianSpeyer</user><email>adriansprojects@gmail.com</email></author></authors>
+    <date>2015-10-31</date>
+    <time>18:41:58</time>
+    <contents><target name="magecommunity"><dir name="RespondrMage"><dir name="RespondrAnalytics"><dir name="Block"><file name="Respondr.php" hash="119d9ddd3882033a9ed6d536fb436158"/></dir><dir name="Helper"><file name="Data.php" hash="382a343ebde881fc0835c43c5e43f7f9"/></dir><dir name="Model"><file name="Observer.php" hash="7301ca92b1762223cf8228439fa8468e"/></dir><dir name="controllers"><file name="IndexController.php" hash="b437f47ccb078744ee6cc6f9f993bdab"/></dir><dir name="etc"><file name="adminhtml.xml" hash="b28f4ddc5e0851cff79bdc1624e1192c"/><file name="config.xml" hash="ba0e13559f0515126ea5b169e6fa6ab2"/><file name="system.xml" hash="6ce9befbcc8441b78ade8ac6c2568955"/></dir></dir></dir></target><target name="magedesign"><dir name="frontend"><dir name="base"><dir name="default"><dir name="layout"><file name="respondranalytics.xml" hash="27dc170600cb1d71cdcb7bacb6455230"/></dir><dir name="template"><dir name="respondranalytics"><file name="respondr.phtml" hash="ab2ddcc1cdba4fcdaedabcac0c9b4fa9"/></dir></dir></dir></dir></dir></target><target name="mageetc"><dir name="modules"><file name="RespondrMage_RespondrAnalytics.xml" hash="9dd32f4b236640c74d1f08f5cb8e344d"/></dir></target><target name="magelocale"><dir name="de_DE"><file name="RespondrMage_RespondrAnalytics.csv" hash="788bc282a1e82ff83d93a70297435376"/></dir><dir name="en_US"><file name="RespondrMage_RespondrAnalytics.csv" hash="464c1c6e0ad748dadc01bf0a1e336287"/></dir></target></contents>
+    <compatible/>
+    <dependencies><required><php><min>5.1.0</min><max>6.0.0</max></php></required></dependencies>
+</package>
