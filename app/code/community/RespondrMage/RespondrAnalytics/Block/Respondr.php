@@ -41,7 +41,7 @@ class RespondrMage_RespondrAnalytics_Block_Respondr extends Mage_Core_Block_Temp
             //$description = str_replace('"', "", $_product->getDescription());
             $description = "";
 
-            echo '_raq.push(["trackProductView", {sku: "' . $this->jsQuoteEscape($this->jsQuoteEscape($currentproduct->getSku()), '"') . '", name: "' . $this->jsQuoteEscape($this->jsQuoteEscape($product), '"') . '", categories: "' . $this->jsQuoteEscape($category_name) . '", price: ' . $currentproduct->getPrice() . ', imageUrl: "'. $_product->getImageUrl() . '", desc: "'. $this->jsQuoteEscape($description) .'"}]);';
+            echo '_raq.push(["trackProductView", {externalId: "' . $this->jsQuoteEscape($this->jsQuoteEscape($currentproduct->getId()), '"') . '", sku: "' . $this->jsQuoteEscape($this->jsQuoteEscape($currentproduct->getSku()), '"') . '", name: "' . $this->jsQuoteEscape($this->jsQuoteEscape($product), '"') . '", categories: "' . $this->jsQuoteEscape($category_name) . '", price: ' . $currentproduct->getPrice() . ', imageUrl: "'. $_product->getImageUrl() . '", desc: "'. $this->jsQuoteEscape($description) .'"}]);';
             Mage::unregister('current_category');
         
         // is this a category view
@@ -121,7 +121,7 @@ class RespondrMage_RespondrAnalytics_Block_Respondr extends Mage_Core_Block_Temp
             if ($cartitem->getPrice() == 0 || $cartitem->getPrice() < 0.00001):
                 continue;
             endif;
-            echo '_raq.push(["updateEcommerceItem", {sku: "' . $cartitem->getSku() . '", name: "' . $nameofproduct . '", categories: "' . $category_name . '", price: ' . $cartitem->getPrice() . ', qty: ' . $cartitem->getQty() . '}]);';
+            echo '_raq.push(["updateEcommerceItem", {externalId: "' . $cartitem->product_id . '", sku: "' . $cartitem->getSku() . '", name: "' . $nameofproduct . '", categories: "' . $category_name . '", price: ' . $cartitem->getPrice() . ', qty: ' . $cartitem->getQty() . '}]);';
             echo "\n";
         }
     }
